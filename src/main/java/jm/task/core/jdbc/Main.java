@@ -1,5 +1,7 @@
 package jm.task.core.jdbc;
 
+import jm.task.core.jdbc.dao.UserDao;
+import jm.task.core.jdbc.dao.UserDaoHibernateImpl;
 import jm.task.core.jdbc.service.UserServiceImpl;
 import jm.task.core.jdbc.util.Util;
 
@@ -34,5 +36,15 @@ public class Main {
         userService.cleanUsersTable();
         //Удаление таблицы
         userService.dropUsersTable();
+        /*1 В util лучше не перегружать getMySQLConnection, а сделать один.       ---
+          2 UserServiceImpl не расширяем Util, т.к. в Util методы статичные.      ---
+          3 Классы dao/service должны реализовывать соответствующие интерфейсы    ---
+          4 service переиспользует методы dao                                     ---
+          5 Работа с базой данных должна находиться в dao.                        ---*/
+
+        //===========================================================
+
+        /*UserDaoHibernateImpl userDaoHibernate = new UserDaoHibernateImpl();
+        userDaoHibernate.createUsersTable();*/
     }
 }
