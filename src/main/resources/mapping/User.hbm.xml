@@ -3,7 +3,7 @@
         "-//Hibernate/Hibernate Mapping DTD//EN"
         "http://www.hibernate.org/dtd/hibernate-mapping-3.0.dtd">
 <hibernate-mapping>
-<!--    <class name="net.proselyte.hibernate.example.model.Developer" table="USER">-->
+    <!--    <class name="net.proselyte.hibernate.example.model.Developer" table="USER">-->
     <class name="service.UserServiceImpl" table="USER">
         <meta attribute="class-description">
             This class contains developer's details.

@@ -8,7 +8,7 @@
         <property name="hibernate.connection.driver_class">com.mysql.cj.jdbc.Driver</property>
 
         <!-- Assume ИМЯ ВАШЕЙ БД is the database name -->
-        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/myBd</property>
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/myDb</property>
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">1</property>
 

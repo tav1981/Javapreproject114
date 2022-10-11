@@ -17,4 +17,5 @@ public interface UserDao {
     List<User> getAllUsers() throws SQLException;
 
     void cleanUsersTable() throws SQLException;
+    String getUserNameById(Long id) throws SQLException;
 }

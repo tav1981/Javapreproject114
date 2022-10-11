@@ -12,11 +12,9 @@ public class UserDaoJDBCImpl implements UserDao {
 
     }
 
-    Util util = new Util();
-    Connection connection = util.getMySQLConnection();
-
-    public void createUsersTable() throws SQLException {
-        PreparedStatement preparedStatement = null;
+    Connection connection = Util.getMySQLConnection();
+    //-----------------------------------------------------------------
+    public void createUsersTable()  {
         String sql = "CREATE TABLE IF NOT EXISTS `mydb`.`User` (\n" +
                 "  `id` BIGINT NOT NULL AUTO_INCREMENT,\n" +
                 "  `name` VARCHAR(45) NOT NULL,\n" +
@@ -24,22 +22,14 @@ public class UserDaoJDBCImpl implements UserDao {
                 "  `age` TINYINT(3) NULL,\n" +
                 "  PRIMARY KEY (`id`))\n" +
                 "ENGINE = InnoDB";
-        try {
-            preparedStatement = connection.prepareStatement(sql);
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            /*if (connection != null) {
-                connection.close();
-            }*/
         }
     }
-
-    public void dropUsersTable() throws SQLException {
+    //-----------------------------------------------------------------
+    public void dropUsersTable() {
         PreparedStatement preparedStatement = null;
         String sql = "DROP TABLE IF EXISTS user";
         try {
@@ -47,66 +37,38 @@ public class UserDaoJDBCImpl implements UserDao {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            /*if (connection != null) {
-                connection.close();
-            }*/
         }
-
     }
-
-    public void saveUser(String name, String lastName, byte age) throws SQLException {
-        PreparedStatement preparedStatement = null;
+    //-----------------------------------------------------------------
+    public void saveUser(String name, String lastName, byte age) {
         String sql = "INSERT INTO USER (NAME, LASTNAME, AGE) VALUES(?, ?, ?)";
-        try {
-            preparedStatement = connection.prepareStatement(sql);
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.setString(1, name);
             preparedStatement.setString(2, lastName);
             preparedStatement.setByte(3, age);
-
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             e.printStackTrace();
-        } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            /*if (connection != null) {
-                connection.close();
-            }*/
         }
     }
-
-    public void removeUserById(long id) throws SQLException {
-        PreparedStatement preparedStatement = null;
+    //-----------------------------------------------------------------
+    public void removeUserById(long id) {
         String sql = "DELETE FROM user WHERE id = ?";
-        try {
-            preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setLong(1, id);
 
+        try(PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            /*if (connection != null) {
-                connection.close();
-            }*/
         }
-
     }
-
-    public List<User> getAllUsers() throws SQLException {
+    //-----------------------------------------------------------------
+    public List<User> getAllUsers() {
         List<User> userList = new ArrayList<>();
         String sql = "SELECT * FROM user";
-        Statement statement = null;
-        try {
-            statement = connection.createStatement();
+
+        try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(sql);
 
             while (resultSet.next()) {
@@ -121,34 +83,36 @@ public class UserDaoJDBCImpl implements UserDao {
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (statement != null) {
-                statement.close();
-            }
-            /*if (connection != null) {
-                connection.close();
-            }*/
         }
         return userList;
-
     }
-
-    public void cleanUsersTable() throws SQLException {
-        PreparedStatement preparedStatement = null;
+    //-----------------------------------------------------------------
+    public void cleanUsersTable() {
         String sql = "DELETE FROM user";
-        try {
-            preparedStatement = connection.prepareStatement(sql);
 
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
             preparedStatement.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
-        } finally {
-            if (preparedStatement != null) {
-                preparedStatement.close();
-            }
-            /*if (connection != null) {
-                connection.close();
-            }*/
         }
     }
+    //----------------------------------------------------------------
+    @Override
+    public String getUserNameById(Long id) {
+        String sql = "SELECT * FROM user WHERE id = ?";
+        String name = null;
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(sql)) {
+            preparedStatement.setLong(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            while (resultSet.next()) {
+                name = resultSet.getString("name");
+            }
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return name;
+    }
+    //-----------------------------------------------------------------
+
 }
