@@ -54,18 +54,11 @@ public class Util {
         //myConfig.configure(new File("/resources/hibernate.cfg.xml"));
         //sessionFactory = new Configuration().configure().buildSessionFactory();
         //myConfig.configure();
-        System.out.println("aaaaaaaaaaaaaaaaaaa------------------------------------");
 
-        try(SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-            Session session = sessionFactory.openSession()) {
-            System.out.println("Cессия запущена");
-            //User user =
-            return session;
-        }
+        SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
+        Session session = sessionFactory.openSession();
+        System.out.println("Cессия запущена");
 
-        //return null;
-
+        return session;
     }
-
-
 }
