@@ -12,9 +12,9 @@
         <property name="hibernate.connection.username">root</property>
         <property name="hibernate.connection.password">1</property>
 
-        <!--наводим красоту в логах-->
+        <!--наводим красоту в логах
         <property name="show_sql">true</property>
-        <property name="format_sql">true</property>
+        <property name="format_sql">true</property>-->
 
         <!-- List of XML mapping files -->
         <mapping resource="mapping/User.hbm.xml"/>

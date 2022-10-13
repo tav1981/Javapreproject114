@@ -1,9 +1,9 @@
 package jm.task.core.jdbc.dao;
 
-import com.mysql.cj.xdevapi.SessionFactory;
 import jm.task.core.jdbc.model.User;
 import jm.task.core.jdbc.util.Util;
 import org.hibernate.Session;
+import org.hibernate.SessionFactory;
 import org.hibernate.Transaction;
 
 import java.sql.Connection;
@@ -12,7 +12,7 @@ import java.util.List;
 
 public class UserDaoHibernateImpl  implements UserDao {
 
-    Session session = Util.getHibernateSession();
+    SessionFactory sessionFactory = Util.getHibernateSession();
 
     public UserDaoHibernateImpl() {
 
@@ -20,9 +20,6 @@ public class UserDaoHibernateImpl  implements UserDao {
 
     @Override
     public void createUsersTable() {
-
-        Transaction transaction = session.beginTransaction();
-
         String sql = "CREATE TABLE IF NOT EXISTS `mydb`.`User` (\n" +
                 "  `id` BIGINT NOT NULL AUTO_INCREMENT,\n" +
                 "  `name` VARCHAR(45) NOT NULL,\n" +
@@ -30,55 +27,65 @@ public class UserDaoHibernateImpl  implements UserDao {
                 "  `age` TINYINT(3) NULL,\n" +
                 "  PRIMARY KEY (`id`))\n" +
                 "ENGINE = InnoDB";
-
-        session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
-
-        transaction.commit();
-        //session.close();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
+            transaction.commit();
+        }
     }
 
     @Override
     public void dropUsersTable() {
-        Transaction transaction = session.beginTransaction();
-        String sql = "DROP TABLE IF EXISTS user";
-        session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
-        transaction.commit();
-        //session.close();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            String sql = "DROP TABLE IF EXISTS user";
+            session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
+            transaction.commit();
+        }
     }
 
     @Override
     public void saveUser(String name, String lastName, byte age) {
-        User user = new User(name, lastName, age);
-        session.save(user);
+        try (Session session = sessionFactory.openSession()) {
+            User user = new User(name, lastName, age);
+            session.save(user);
+        }
     }
 
     @Override
     public void removeUserById(long id) {
-        User user = session.get(User.class, id);
-        session.delete(user);
+        try (Session session = sessionFactory.openSession()) {
+            User user = session.get(User.class, id);
+            session.delete(user);
+        }
     }
 
     @Override
     public List<User> getAllUsers() {
-        Transaction transaction = session.beginTransaction();
-        List users = session.createQuery("FROM USER").list();
-        transaction.commit();
-        session.close();
-        return users;
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            List users = session.createQuery("FROM User").list();
+            transaction.commit();
+            return users;
+        }
     }
 
     @Override
     public void cleanUsersTable() {
-        Transaction transaction = session.beginTransaction();
-        String sql = "DELETE FROM user";
-        session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
-        transaction.commit();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
+            String sql = "DELETE FROM user";
+            session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
+            transaction.commit();
+        }
     }
 
     @Override
     public String getUserNameById(Long id)  {
-        User user = (User) session.get(User.class, id);
-        return user.getName();
+        try (Session session = sessionFactory.openSession()) {
+            User user =  session.get(User.class, id);
+            return user.getName();
+        }
     }
 
 }

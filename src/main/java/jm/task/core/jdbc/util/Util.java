@@ -46,7 +46,7 @@ public class Util {
          return conn;
     }
 
-    public static Session getHibernateSession() {
+    public static SessionFactory getHibernateSession() {
 
         //Configuration myConfig = new Configuration();
         //myConfig.configure(new File(getClass().getClassLoader().getResource("hibernate.cfg.xml").toURI()));
@@ -56,9 +56,9 @@ public class Util {
         //myConfig.configure();
 
         SessionFactory sessionFactory = new Configuration().configure().buildSessionFactory();
-        Session session = sessionFactory.openSession();
+        //Session session = sessionFactory.openSession();
         System.out.println("Cессия запущена");
 
-        return session;
+        return sessionFactory;
     }
 }
