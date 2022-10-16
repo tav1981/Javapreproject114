@@ -30,8 +30,8 @@ public class UserDaoHibernateImpl  implements UserDao {
                 "ENGINE = InnoDB";
         try (Session session = sessionFactory.openSession()) {
             transaction = session.beginTransaction();
-            //session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
-            session.createNativeQuery(sql).executeUpdate();
+            session.createSQLQuery(sql).addEntity(User.class).executeUpdate();
+            //session.createNativeQuery(sql).executeUpdate();
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
@@ -52,7 +52,7 @@ public class UserDaoHibernateImpl  implements UserDao {
             transaction.commit();
         } catch (Exception e) {
             if (transaction != null) {
-                //transaction.rollback();
+                transaction.rollback();
             }
             e.printStackTrace();
         }
